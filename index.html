@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Портфель Осьминога 🐙</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root{
+    --bg: var(--tg-theme-bg-color, #0f1115);
+    --text: var(--tg-theme-text-color, #e8eaed);
+    --hint: var(--tg-theme-hint-color, #8a909a);
+    --card: var(--tg-theme-secondary-bg-color, #1a1d24);
+    --btn: var(--tg-theme-button-color, #3a7afe);
+    --link: var(--tg-theme-link-color, #5b9dff);
+    --up:#2E9E5B; --down:#D64550; --warn:#B58900;
+    --border: rgba(255,255,255,.08);
+    --border-strong: rgba(255,255,255,.14);
+    --chip-bg: rgba(255,255,255,.045);
+    --shadow: 0 1px 2px rgba(0,0,0,.25), 0 4px 16px rgba(0,0,0,.18);
+    --radius:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px; line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+  .wrap{max-width:520px;margin:0 auto;padding:14px 14px 40px;}
+  .mono{font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
+
+  /* states */
+  .state{min-height:60vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;color:var(--hint);}
+  .spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--border-strong);border-top-color:var(--btn);animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .state .emoji{font-size:40px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;cursor:pointer;border:none;
+    background:var(--btn);color:#fff;font-weight:600;font-size:14px;
+    padding:11px 20px;border-radius:12px;font-family:inherit;min-height:44px;
+  }
+  .btn:active{opacity:.85;}
+  .btn-ghost{background:var(--chip-bg);color:var(--text);border:1px solid var(--border-strong);}
+
+  /* header */
+  .hero{
+    background:linear-gradient(180deg, var(--card), color-mix(in srgb, var(--card) 78%, var(--bg)));
+    border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px 18px 16px;box-shadow:var(--shadow);margin-bottom:12px;
+  }
+  .hero-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+  .logo{font-size:21px;}
+  .title{font-size:16px;font-weight:700;letter-spacing:.1px;}
+  .badge{
+    font-size:10px;font-weight:700;letter-spacing:.6px;
+    padding:3px 7px;border-radius:6px;
+    background:rgba(181,137,0,.16);color:#d8b73a;border:1px solid rgba(181,137,0,.35);
+    text-transform:uppercase;white-space:nowrap;
+  }
+  .total{margin-top:14px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;}
+  .total-val{font-size:34px;font-weight:800;letter-spacing:-.5px;line-height:1;}
+  .pnl-big{font-size:17px;font-weight:700;display:inline-flex;align-items:center;gap:3px;}
+  .updated{margin-top:10px;font-size:12px;color:var(--hint);}
+
+  /* chips */
+  .chips{display:flex;gap:8px;margin-bottom:14px;}
+  .chip{
+    flex:1;background:var(--card);border:1px solid var(--border);border-radius:13px;
+    padding:11px 12px;text-align:center;min-width:0;
+  }
+  .chip .k{font-size:11px;color:var(--hint);margin-bottom:3px;white-space:nowrap;}
+  .chip .v{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* section heading */
+  .sec-h{font-size:13px;font-weight:700;color:var(--hint);text-transform:uppercase;letter-spacing:.7px;margin:18px 4px 9px;}
+
+  /* book card */
+  .book{
+    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow);
+  }
+  .book-head{
+    display:flex;align-items:center;gap:11px;padding:14px 15px;cursor:pointer;user-select:none;min-height:44px;
+  }
+  .book-emoji{font-size:22px;line-height:1;}
+  .book-meta{flex:1;min-width:0;}
+  .book-name{font-size:14.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .book-hor{font-size:11.5px;color:var(--hint);margin-top:1px;}
+  .book-right{text-align:right;flex-shrink:0;}
+  .book-val{font-size:14.5px;font-weight:700;}
+  .book-pnl{font-size:12px;font-weight:600;margin-top:1px;}
+  .chev{
+    flex-shrink:0;width:18px;height:18px;color:var(--hint);
+    transition:transform .22s ease;
+  }
+  .book.open .chev{transform:rotate(180deg);}
+  .book-body{display:none;padding:0 15px 6px;border-top:1px solid var(--border);}
+  .book.open .book-body{display:block;}
+
+  /* positions */
+  .pos{padding:11px 0;border-bottom:1px solid var(--border);}
+  .pos:last-child{border-bottom:none;}
+  .pos-row1{display:flex;align-items:center;gap:8px;}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .dot.ok{background:var(--up);} .dot.warn{background:var(--warn);} .dot.bad{background:var(--down);}
+  .pos-tkr{font-weight:700;font-size:14px;}
+  .pos-prices{font-size:12px;color:var(--hint);margin-left:auto;text-align:right;white-space:nowrap;}
+  .pnl-chip{
+    font-size:11.5px;font-weight:700;padding:2px 7px;border-radius:7px;white-space:nowrap;
+  }
+  .pos-row2{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap;padding-left:16px;}
+  .pos-tt{font-size:11px;color:var(--hint);}
+  .tag{
+    font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:6px;
+    background:rgba(181,137,0,.14);color:#d8b73a;border:1px solid rgba(181,137,0,.28);
+  }
+
+  /* watching */
+  .cash-line{padding:12px 0 8px;font-size:13px;font-weight:600;}
+  .watch{padding:9px 0;border-bottom:1px solid var(--border);}
+  .watch:last-child{border-bottom:none;}
+  .watch-r1{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .watch-side{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:6px;background:var(--chip-bg);border:1px solid var(--border-strong);color:var(--text);}
+  .watch-trig{font-size:12.5px;color:var(--text);}
+  .watch-note{font-size:11.5px;color:var(--hint);margin-top:3px;padding-left:1px;}
+
+  /* trades */
+  .trade{
+    display:flex;align-items:center;gap:9px;padding:11px 13px;
+    background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:7px;
+  }
+  .trade-date{font-size:11px;color:var(--hint);width:46px;flex-shrink:0;line-height:1.25;}
+  .act{
+    font-size:10px;font-weight:700;letter-spacing:.4px;padding:3px 7px;border-radius:6px;
+    white-space:nowrap;flex-shrink:0;
+  }
+  .act-buy{background:rgba(46,158,91,.16);color:#46c178;border:1px solid rgba(46,158,91,.3);}
+  .act-sell{background:rgba(214,69,80,.16);color:#e36a73;border:1px solid rgba(214,69,80,.3);}
+  .act-neutral{background:var(--chip-bg);color:var(--text);border:1px solid var(--border-strong);}
+  .trade-mid{flex:1;min-width:0;}
+  .trade-tkr{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trade-note{font-size:11px;color:var(--hint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .trade-res{font-size:13px;font-weight:700;flex-shrink:0;white-space:nowrap;}
+  .empty-mini{font-size:13px;color:var(--hint);padding:8px 2px;}
+
+  /* footer */
+  .footer{margin-top:24px;padding:16px 6px 0;border-top:1px solid var(--border);text-align:center;}
+  .footer .disc{font-size:11.5px;color:var(--hint);line-height:1.5;}
+  .footer a{color:var(--link);text-decoration:none;font-weight:600;}
+  .footer .upd-note{font-size:11px;color:var(--hint);margin-top:8px;}
+  .reload-bar{display:flex;justify-content:center;margin-top:16px;}
+
+  .up{color:var(--up);} .down{color:var(--down);} .neutral{color:var(--hint);}
+  .pnl-chip.up{background:rgba(46,158,91,.15);color:#46c178;}
+  .pnl-chip.down{background:rgba(214,69,80,.15);color:#e36a73;}
+  .pnl-chip.neutral{background:var(--chip-bg);color:var(--hint);}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="state" id="loading">
+    <div class="spinner"></div>
+    <div>Загружаем портфель…</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Telegram integration (fully guarded) ---------- */
+  var tg = null;
+  try { tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null; } catch(e){ tg = null; }
+  if (tg) {
+    try { tg.ready(); } catch(e){}
+    try { tg.expand(); } catch(e){}
+    try {
+      var bg = (tg.themeParams && tg.themeParams.bg_color) ? tg.themeParams.bg_color : "#0f1115";
+      if (tg.setHeaderColor) tg.setHeaderColor(bg);
+      if (tg.setBackgroundColor) tg.setBackgroundColor(bg);
+    } catch(e){}
+  }
+
+  var app = document.getElementById("app");
+
+  /* ---------- formatting helpers ---------- */
+  var MINUS = "−"; // U+2212 minus, aligns better with tabular nums
+
+  function isNum(v){ return typeof v === "number" && isFinite(v); }
+
+  function groupInt(intStr){
+    return intStr.replace(/\B(?=(\d{3})+(?!\d))/g, " "); // thin space groups
+  }
+
+  // Format a raw number preserving decimals (ints grouped, decimals kept as-is).
+  function fmtNum(v){
+    if (!isNum(v)) return "";
+    var neg = v < 0;
+    var abs = Math.abs(v);
+    var s;
+    if (Number.isInteger(abs)) {
+      s = groupInt(abs.toString());
+    } else {
+      // keep the natural decimal representation (e.g. 0.05825), group integer part
+      var parts = abs.toString().split(".");
+      s = groupInt(parts[0]) + "." + parts[1];
+    }
+    return (neg ? MINUS : "") + s;
+  }
+
+  // A price-ish value that may be number or string. Numbers get $ + grouping.
+  function fmtPrice(v){
+    if (isNum(v)) return "$" + fmtNum(v);
+    if (v === null || v === undefined || v === "") return "";
+    return String(v);
+  }
+
+  function fmtMoney(v){
+    if (!isNum(v)) return "—";
+    var neg = v < 0;
+    var n = Math.round(Math.abs(v));
+    var s = groupInt(n.toString());
+    return (neg ? MINUS + "$" : "$") + s;
+  }
+
+  function fmtPct(v){
+    if (!isNum(v)) return "—";
+    var sign = v > 0 ? "+" : (v < 0 ? MINUS : "");
+    return sign + Math.abs(v).toFixed(1) + "%";
+  }
+
+  function pnlClass(v){
+    if (!isNum(v)) return "neutral";
+    if (v > 0) return "up";
+    if (v < 0) return "down";
+    return "neutral";
+  }
+
+  function arrow(v){
+    if (!isNum(v) || v === 0) return "";
+    return v > 0 ? "▲" : "▼";
+  }
+
+  function esc(s){
+    if (s === null || s === undefined) return "";
+    return String(s)
+      .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+      .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+  }
+
+  // Build a safe href + display label from meta.channel (@handle | t.me/x | https://...)
+  function channelLink(ch){
+    if (!ch) return null;
+    var raw = String(ch).trim();
+    if (!raw) return null;
+    var href = null, label = raw;
+    if (/^https?:\/\//i.test(raw)) {
+      href = raw;
+    } else if (/^t\.me\//i.test(raw)) {
+      href = "https://" + raw;
+    } else if (raw.charAt(0) === "@") {
+      href = "https://t.me/" + raw.slice(1);
+    } else if (/^[A-Za-z0-9_]{3,}$/.test(raw)) {
+      href = "https://t.me/" + raw;
+      label = "@" + raw;
+    }
+    return { href: href, label: label };
+  }
+
+  /* ---------- render: states ---------- */
+  function renderLoading(){
+    app.innerHTML =
+      '<div class="state" id="loading"><div class="spinner"></div><div>Загружаем портфель…</div></div>';
+  }
+
+  function renderError(msg){
+    app.innerHTML =
+      '<div class="state">' +
+        '<div class="emoji">🐙</div>' +
+        '<div>Не удалось загрузить данные портфеля.</div>' +
+        '<div style="font-size:12px;opacity:.8">' + esc(msg || "") + '</div>' +
+        '<button class="btn" id="retry">↻ Обновить</button>' +
+      '</div>';
+    var b = document.getElementById("retry");
+    if (b) b.addEventListener("click", load);
+  }
+
+  /* ---------- render: pieces ---------- */
+  function chevSvg(){
+    return '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+  }
+
+  function renderPosition(p){
+    var cls = pnlClass(p.pnl_pct);
+    var status = (p.status === "warn" || p.status === "bad") ? p.status : "ok";
+    var prices = "";
+    if (isNum(p.buy)) prices += "@ " + esc(fmtPrice(p.buy));
+    if (isNum(p.price)) prices += (prices ? " · " : "") + "тек. " + esc(fmtPrice(p.price));
+
+    var tt = [];
+    if (p.target !== undefined && p.target !== null && p.target !== "") tt.push("🎯 " + esc(fmtPrice(p.target)));
+    if (p.stop !== undefined && p.stop !== null && p.stop !== "") tt.push("⛔ " + esc(fmtPrice(p.stop)));
+
+    var html = '<div class="pos">' +
+      '<div class="pos-row1">' +
+        '<span class="dot ' + status + '"></span>' +
+        '<span class="pos-tkr">' + esc(p.ticker) + '</span>' +
+        '<span class="pnl-chip ' + cls + '">' + fmtPct(p.pnl_pct) + '</span>' +
+        (prices ? '<span class="pos-prices mono">' + prices + '</span>' : '') +
+      '</div>';
+
+    if (tt.length || (p.note && p.note !== "")) {
+      html += '<div class="pos-row2">';
+      if (tt.length) html += '<span class="pos-tt mono">' + tt.join(" · ") + '</span>';
+      if (p.note && p.note !== "") html += '<span class="tag">' + esc(p.note) + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function renderWatching(list){
+    var html = '<div class="cash-line">В кэше. Ждём триггеры:</div>';
+    for (var i=0;i<list.length;i++){
+      var w = list[i];
+      html += '<div class="watch">' +
+        '<div class="watch-r1">' +
+          '<span class="pos-tkr">' + esc(w.ticker) + '</span>' +
+          (w.side ? '<span class="watch-side">' + esc(w.side) + '</span>' : '') +
+          (w.trigger ? '<span class="watch-trig mono">' + esc(w.trigger) + '</span>' : '') +
+        '</div>' +
+        (w.note ? '<div class="watch-note">' + esc(w.note) + '</div>' : '') +
+      '</div>';
+    }
+    return html;
+  }
+
+  function renderBook(b, idx){
+    var pnlCls = pnlClass(b.pnl_pct);
+    var positions = Array.isArray(b.positions) ? b.positions : [];
+    var watching = Array.isArray(b.watching) ? b.watching : [];
+
+    var body = "";
+    if (positions.length){
+      for (var i=0;i<positions.length;i++) body += renderPosition(positions[i]);
+    } else if (watching.length){
+      body += renderWatching(watching);
+    } else {
+      body += '<div class="empty-mini">Нет открытых позиций.</div>';
+    }
+
+    var openCls = (idx === 0) ? " open" : "";
+
+    return '<div class="book' + openCls + '" data-idx="' + idx + '">' +
+      '<div class="book-head" data-toggle="' + idx + '">' +
+        '<span class="book-emoji">' + esc(b.emoji || "•") + '</span>' +
+        '<div class="book-meta">' +
+          '<div class="book-name">' + esc(b.name) + '</div>' +
+          '<div class="book-hor">' + esc(b.horizon || "") + '</div>' +
+        '</div>' +
+        '<div class="book-right">' +
+          '<div class="book-val mono">' + fmtMoney(b.value) + '</div>' +
+          '<div class="book-pnl ' + pnlCls + '">' + (arrow(b.pnl_pct) ? arrow(b.pnl_pct)+' ' : '') + fmtPct(b.pnl_pct) + '</div>' +
+        '</div>' +
+        chevSvg() +
+      '</div>' +
+      '<div class="book-body">' + body + '</div>' +
+    '</div>';
+  }
+
+  function actClass(t){
+    var a = (t.action || "").toUpperCase();
+    if (/ЗАСЕВ|ПОКУПКА|BUY|ВХОД|ДОБОР/.test(a)) return "act-buy";
+    if (/ПРОДАЖА|ВЫХОД|SELL|ЗАКРЫТ/.test(a)){
+      // color exit by result sign if numeric
+      if (isNum(t.result)) return t.result >= 0 ? "act-buy" : "act-sell";
+      return "act-sell";
+    }
+    return "act-neutral";
+  }
+
+  function renderTrade(t){
+    var resStr, resCls = "";
+    if (isNum(t.result)){
+      resStr = fmtPct(t.result);
+      resCls = pnlClass(t.result);
+    } else if (t.result === null || t.result === undefined || t.result === ""){
+      resStr = "—"; resCls = "neutral";
+    } else {
+      resStr = esc(t.result); resCls = "neutral";
+    }
+
+    var mid = esc(t.ticker || "");
+    var noteParts = [];
+    if (t.book) noteParts.push(esc(t.book));
+    if (t.note) noteParts.push(esc(t.note));
+
+    return '<div class="trade">' +
+      '<div class="trade-date mono">' + esc(t.date || "") + '</div>' +
+      '<span class="act ' + actClass(t) + '">' + esc(t.action || "") + '</span>' +
+      '<div class="trade-mid">' +
+        '<div class="trade-tkr">' + mid + '</div>' +
+        (noteParts.length ? '<div class="trade-note">' + noteParts.join(" · ") + '</div>' : '') +
+      '</div>' +
+      '<div class="trade-res ' + resCls + ' mono">' + resStr + '</div>' +
+    '</div>';
+  }
+
+  /* ---------- render: main ---------- */
+  function render(data){
+    var meta = data.meta || {};
+    var sum = data.summary || {};
+    var books = Array.isArray(data.books) ? data.books : [];
+    var trades = Array.isArray(data.trades) ? data.trades.slice() : [];
+    var history = Array.isArray(data.history) ? data.history.slice() : [];
+
+    var totalVal = isNum(sum.value) ? sum.value : meta.total_capital;
+    var pnlPct = sum.pnl_pct;
+    var heroCls = pnlClass(pnlPct);
+
+    // winrate
+    var wr;
+    if (isNum(sum.wins) && isNum(sum.losses) && (sum.wins + sum.losses) > 0){
+      wr = sum.wins + "–" + sum.losses;
+    } else {
+      wr = "—";
+    }
+
+    var html = "";
+
+    /* header */
+    html += '<div class="hero">' +
+      '<div class="hero-top">' +
+        '<span class="logo">🐙</span>' +
+        '<span class="title">' + esc(meta.name || "Портфель Осьминога") + '</span>' +
+        (meta.virtual ? '<span class="badge">Виртуальный</span>' : '') +
+      '</div>' +
+      '<div class="total">' +
+        '<span class="total-val mono">' + fmtMoney(totalVal) + '</span>' +
+        '<span class="pnl-big ' + heroCls + ' mono">' + (arrow(pnlPct) ? arrow(pnlPct)+' ' : '') + fmtPct(pnlPct) + '</span>' +
+      '</div>' +
+      (meta.updated ? '<div class="updated">Обновлено: ' + esc(meta.updated) + '</div>' : '') +
+    '</div>';
+
+    /* chips */
+    html += '<div class="chips">' +
+      '<div class="chip"><div class="k">Вложено</div><div class="v mono">' + fmtMoney(sum.invested) + '</div></div>' +
+      '<div class="chip"><div class="k">Кэш</div><div class="v mono">' + fmtMoney(sum.cash) + '</div></div>' +
+      '<div class="chip"><div class="k">Винрейт</div><div class="v mono">' + wr + '</div></div>' +
+    '</div>';
+
+    /* books */
+    for (var i=0;i<books.length;i++){
+      html += renderBook(books[i], i);
+    }
+
+    /* trades */
+    html += '<div class="sec-h">Последние сделки</div>';
+    if (trades.length){
+      trades.sort(function(a,b){ return String(b.date||"").localeCompare(String(a.date||"")); });
+      for (var j=0;j<trades.length;j++) html += renderTrade(trades[j]);
+    } else {
+      html += '<div class="empty-mini">Сделок пока нет.</div>';
+    }
+
+    if (history.length){
+      html += '<div class="sec-h">Закрытые</div>';
+      history.sort(function(a,b){ return String(b.date||"").localeCompare(String(a.date||"")); });
+      for (var k=0;k<history.length;k++) html += renderTrade(history[k]);
+    }
+
+    /* footer — channel is data-driven from meta.channel */
+    var chLink = channelLink(meta.channel);
+    var channelHtml = "";
+    if (chLink){
+      if (chLink.href){
+        channelHtml = '<div class="disc" style="margin-top:8px">Канал: ' +
+          '<a href="' + esc(chLink.href) + '" target="_blank" rel="noopener noreferrer">' + esc(chLink.label) + '</a></div>';
+      } else {
+        channelHtml = '<div class="disc" style="margin-top:8px">Канал: ' + esc(chLink.label) + '</div>';
+      }
+    }
+
+    html += '<div class="footer">' +
+      (meta.disclaimer ? '<div class="disc">' + esc(meta.disclaimer) + '</div>' : '') +
+      channelHtml +
+      '<div class="upd-note">Данные обновляются ежедневно</div>' +
+      '<div class="reload-bar"><button class="btn btn-ghost" id="reload">↻ Обновить</button></div>' +
+    '</div>';
+
+    app.innerHTML = html;
+
+    /* wire up accordions */
+    var heads = app.querySelectorAll(".book-head");
+    for (var h=0;h<heads.length;h++){
+      heads[h].addEventListener("click", function(){
+        var bookEl = this.parentNode;
+        bookEl.classList.toggle("open");
+      });
+    }
+
+    var rl = document.getElementById("reload");
+    if (rl) rl.addEventListener("click", load);
+  }
+
+  /* ---------- load ---------- */
+  function load(){
+    renderLoading();
+    fetch('./portfolio.json?ts=' + Date.now(), { cache: "no-store" })
+      .then(function(r){
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function(data){
+        if (!data || typeof data !== "object") throw new Error("Пустой ответ");
+        render(data);
+      })
+      .catch(function(err){
+        renderError(err && err.message ? err.message : "Ошибка сети");
+      });
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>
