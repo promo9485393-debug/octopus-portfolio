@@ -159,6 +159,11 @@
   .pnl-chip.up{background:rgba(46,158,91,.15);color:#46c178;}
   .pnl-chip.down{background:rgba(214,69,80,.15);color:#e36a73;}
   .pnl-chip.neutral{background:var(--chip-bg);color:var(--hint);}
+
+  /* live crypto indicator */
+  .live-note{margin-top:7px;font-size:11.5px;color:var(--up);display:flex;align-items:center;gap:6px;}
+  .live-dot{width:7px;height:7px;border-radius:50%;background:var(--up);animation:pulse 1.7s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(46,158,91,.55);}70%{box-shadow:0 0 0 6px rgba(46,158,91,0);}100%{box-shadow:0 0 0 0 rgba(46,158,91,0);}}
 </style>
 </head>
 <body>
@@ -187,6 +192,23 @@
   }
 
   var app = document.getElementById("app");
+
+  /* ---------- live crypto (Binance public API) ---------- */
+  var CRYPTO_SYM = {
+    BTC:"BTCUSDT", ETH:"ETHUSDT", SOL:"SOLUSDT", AAVE:"AAVEUSDT", UNI:"UNIUSDT",
+    PENDLE:"PENDLEUSDT", XRP:"XRPUSDT", AVAX:"AVAXUSDT", ENA:"ENAUSDT", SKY:"SKYUSDT",
+    DOGE:"DOGEUSDT", BNB:"BNBUSDT", NEAR:"NEARUSDT", TAO:"TAOUSDT", HYPE:"HYPEUSDT"
+  };
+  var STATE = { data:null };
+  var LIVE = { ok:false, at:0 };
+  var openSet = { 0:true };
+
+  function liveTime(){
+    try {
+      var d = new Date(LIVE.at || Date.now());
+      return ("0"+d.getHours()).slice(-2) + ":" + ("0"+d.getMinutes()).slice(-2);
+    } catch(e){ return ""; }
+  }
 
   /* ---------- formatting helpers ---------- */
   var MINUS = "−"; // U+2212 minus, aligns better with tabular nums
@@ -354,7 +376,7 @@
       body += '<div class="empty-mini">Нет открытых позиций.</div>';
     }
 
-    var openCls = (idx === 0) ? " open" : "";
+    var openCls = openSet[idx] ? " open" : "";
 
     return '<div class="book' + openCls + '" data-idx="' + idx + '">' +
       '<div class="book-head" data-toggle="' + idx + '">' +
@@ -445,6 +467,7 @@
         '<span class="pnl-big ' + heroCls + ' mono">' + (arrow(pnlPct) ? arrow(pnlPct)+' ' : '') + fmtPct(pnlPct) + '</span>' +
       '</div>' +
       (meta.updated ? '<div class="updated">Обновлено: ' + esc(meta.updated) + '</div>' : '') +
+      (LIVE.ok ? '<div class="live-note"><span class="live-dot"></span>Крипта — в реальном времени · ' + liveTime() + '</div>' : '') +
     '</div>';
 
     /* chips */
@@ -489,7 +512,7 @@
     html += '<div class="footer">' +
       (meta.disclaimer ? '<div class="disc">' + esc(meta.disclaimer) + '</div>' : '') +
       channelHtml +
-      '<div class="upd-note">Данные обновляются ежедневно</div>' +
+      '<div class="upd-note">' + (LIVE.ok ? 'Крипта — онлайн (Binance) · акции — дневной снимок' : 'Данные обновляются ежедневно') + '</div>' +
       '<div class="reload-bar"><button class="btn btn-ghost" id="reload">↻ Обновить</button></div>' +
     '</div>';
 
@@ -501,6 +524,8 @@
       heads[h].addEventListener("click", function(){
         var bookEl = this.parentNode;
         bookEl.classList.toggle("open");
+        var di = bookEl.getAttribute("data-idx");
+        if (di !== null) openSet[di] = bookEl.classList.contains("open");
       });
     }
 
@@ -508,7 +533,74 @@
     if (rl) rl.addEventListener("click", load);
   }
 
+  /* ---------- live crypto enrichment ---------- */
+  function recomputeBook(b){
+    var pos = Array.isArray(b.positions) ? b.positions : [];
+    if (!pos.length) return; // cash-only book unchanged
+    var invested = 0, pnl = 0;
+    for (var i=0;i<pos.length;i++){
+      if (isNum(pos[i].size)) invested += pos[i].size;
+      if (isNum(pos[i].pnl_abs)) pnl += pos[i].pnl_abs;
+    }
+    var cash = isNum(b.cash) ? b.cash : 0;
+    b.invested = invested;
+    b.pnl_abs = pnl;
+    b.value = invested + pnl + cash;
+    var cap = isNum(b.capital) ? b.capital : (invested + cash);
+    b.pnl_pct = cap ? (b.value - cap) / cap * 100 : 0;
+  }
+  function recomputeSummary(data){
+    var books = Array.isArray(data.books) ? data.books : [];
+    var val = 0;
+    for (var i=0;i<books.length;i++){ if (isNum(books[i].value)) val += books[i].value; }
+    var cap = (data.meta && isNum(data.meta.total_capital)) ? data.meta.total_capital : 400000;
+    data.summary = data.summary || {};
+    data.summary.value = val;
+    data.summary.pnl_abs = val - cap;
+    data.summary.pnl_pct = cap ? (val - cap) / cap * 100 : 0;
+  }
+  function enrichLiveCrypto(data){
+    var books = Array.isArray(data.books) ? data.books : [];
+    var need = {};
+    for (var i=0;i<books.length;i++){
+      var pos = books[i].positions || [];
+      for (var j=0;j<pos.length;j++){ if (CRYPTO_SYM[pos[j].ticker]) need[pos[j].ticker] = CRYPTO_SYM[pos[j].ticker]; }
+    }
+    var tickers = Object.keys(need);
+    if (!tickers.length) return Promise.resolve(false);
+    return Promise.all(tickers.map(function(t){
+      return fetch("https://api.binance.com/api/v3/ticker/price?symbol=" + need[t], { cache:"no-store" })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ return (j && j.price != null) ? { t:t, price:parseFloat(j.price) } : null; })
+        .catch(function(){ return null; });
+    })).then(function(results){
+      var prices = {};
+      for (var k=0;k<results.length;k++){ if (results[k] && isFinite(results[k].price)) prices[results[k].t] = results[k].price; }
+      if (!Object.keys(prices).length) return false;
+      for (var b=0;b<books.length;b++){
+        var pp = books[b].positions || [], touched = false;
+        for (var p=0;p<pp.length;p++){
+          var pos = pp[p];
+          if (prices[pos.ticker] != null && isNum(pos.buy) && isNum(pos.size)){
+            pos.price = prices[pos.ticker];
+            pos.pnl_pct = (pos.price - pos.buy) / pos.buy * 100;
+            pos.pnl_abs = pos.size * (pos.pnl_pct / 100);
+            pos._live = true; touched = true;
+          }
+        }
+        if (touched) recomputeBook(books[b]);
+      }
+      recomputeSummary(data);
+      LIVE.ok = true; LIVE.at = Date.now();
+      return true;
+    }).catch(function(){ return false; });
+  }
+
   /* ---------- load ---------- */
+  function refreshLive(){
+    if (!STATE.data) return;
+    enrichLiveCrypto(STATE.data).then(function(changed){ if (changed) render(STATE.data); });
+  }
   function load(){
     renderLoading();
     fetch('./portfolio.json?ts=' + Date.now(), { cache: "no-store" })
@@ -518,7 +610,9 @@
       })
       .then(function(data){
         if (!data || typeof data !== "object") throw new Error("Пустой ответ");
-        render(data);
+        STATE.data = data;
+        render(data);     // снимок сразу (мгновенно)
+        refreshLive();    // затем апгрейд до живой крипты
       })
       .catch(function(err){
         renderError(err && err.message ? err.message : "Ошибка сети");
@@ -526,6 +620,7 @@
   }
 
   load();
+  setInterval(refreshLive, 60000);  // авто-обновление крипты раз в минуту, пока открыт
 })();
 </script>
 </body>
