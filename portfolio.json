@@ -5,42 +5,42 @@
     "currency": "USD",
     "total_capital": 400000,
     "launched": "2026-06-20",
-    "updated": "2026-06-20",
+    "updated": "2026-06-21",
     "virtual": true,
     "disclaimer": "Виртуальный портфель — реальные деньги не двигаем. Это разбор, не сигнал. Не инвестиционная рекомендация."
   },
-  "summary": { "value": 400000, "invested": 176000, "cash": 224000, "pnl_abs": 0, "pnl_pct": 0, "wins": 0, "losses": 0 },
+  "summary": { "value": 400442, "invested": 176000, "cash": 224000, "pnl_abs": 442, "pnl_pct": 0.11, "wins": 0, "losses": 0 },
   "books": [
     {
       "id": "stocks_lt", "emoji": "🏛", "name": "Акции/ETF — долгосрок", "horizon": "6–24 мес",
       "capital": 100000, "value": 100000, "cash": 11000, "invested": 89000, "pnl_pct": 0, "pnl_abs": 0,
       "positions": [
-        {"ticker":"NVDA","buy":210.69,"price":210.69,"size":12000,"qty":56.95,"pnl_pct":0,"pnl_abs":0,"stop":"<$170","target":"276 / 330","status":"ok","note":""},
-        {"ticker":"ORCL","buy":184.29,"price":184.29,"size":11000,"qty":59.69,"pnl_pct":0,"pnl_abs":0,"stop":"<$150","target":"260 / 320","status":"ok","note":""},
-        {"ticker":"CCJ","buy":107.88,"price":107.88,"size":10000,"qty":92.70,"pnl_pct":0,"pnl_abs":0,"stop":"<$80","target":"125 / 150","status":"ok","note":""},
-        {"ticker":"NU","buy":12.71,"price":12.71,"size":9000,"qty":708.1,"pnl_pct":0,"pnl_abs":0,"stop":"<$10","target":"16 / 19","status":"ok","note":""},
-        {"ticker":"FIVE","buy":198.49,"price":198.49,"size":9000,"qty":45.34,"pnl_pct":0,"pnl_abs":0,"stop":"<$165","target":"220 / 250","status":"ok","note":""},
-        {"ticker":"VRT","buy":333.05,"price":333.05,"size":9000,"qty":27.02,"pnl_pct":0,"pnl_abs":0,"stop":"<$260","target":"430 / 520","status":"ok","note":""},
-        {"ticker":"GD","buy":350.01,"price":350.01,"size":9000,"qty":25.71,"pnl_pct":0,"pnl_abs":0,"stop":"<$300","target":"390 / 430","status":"ok","note":""},
-        {"ticker":"GDX","buy":87.24,"price":87.24,"size":8000,"qty":91.70,"pnl_pct":0,"pnl_abs":0,"stop":"<$70","target":"96 / 110","status":"ok","note":""},
+        {"ticker":"NVDA","buy":210.69,"price":210.69,"size":12000,"qty":56.95,"pnl_pct":0,"pnl_abs":0,"stop":"<$170","target":"276 / 330","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"ORCL","buy":184.29,"price":184.29,"size":11000,"qty":59.69,"pnl_pct":0,"pnl_abs":0,"stop":"<$150","target":"260 / 320","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"CCJ","buy":107.88,"price":107.88,"size":10000,"qty":92.70,"pnl_pct":0,"pnl_abs":0,"stop":"<$80","target":"125 / 150","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"NU","buy":12.71,"price":12.71,"size":9000,"qty":708.1,"pnl_pct":0,"pnl_abs":0,"stop":"<$10","target":"16 / 19","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"FIVE","buy":198.49,"price":198.49,"size":9000,"qty":45.34,"pnl_pct":0,"pnl_abs":0,"stop":"<$165","target":"220 / 250","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"VRT","buy":333.05,"price":333.05,"size":9000,"qty":27.02,"pnl_pct":0,"pnl_abs":0,"stop":"<$260","target":"430 / 520","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"GD","buy":350.01,"price":350.01,"size":9000,"qty":25.71,"pnl_pct":0,"pnl_abs":0,"stop":"<$300","target":"390 / 430","status":"ok","note":"биржи закрыты (вых.)"},
+        {"ticker":"GDX","buy":87.24,"price":87.24,"size":8000,"qty":91.70,"pnl_pct":0,"pnl_abs":0,"stop":"<$70","target":"96 / 110","status":"ok","note":"биржи закрыты (вых.)"},
         {"ticker":"NBIS","buy":298.80,"price":298.80,"size":7000,"qty":23.43,"pnl_pct":0,"pnl_abs":0,"stop":"<$150","target":"320 / 450","status":"warn","note":"перегрет — стартер"},
         {"ticker":"SRRK","buy":47.33,"price":47.33,"size":5000,"qty":105.6,"pnl_pct":0,"pnl_abs":0,"stop":"<$34","target":"60 / 80","status":"ok","note":"лотерея"}
       ]
     },
     {
       "id": "crypto_lt", "emoji": "🌊", "name": "Крипта — долгосрок", "horizon": "цикл",
-      "capital": 100000, "value": 100000, "cash": 13000, "invested": 87000, "pnl_pct": 0, "pnl_abs": 0,
+      "capital": 100000, "value": 100442, "cash": 13000, "invested": 87000, "pnl_pct": 0.44, "pnl_abs": 442,
       "positions": [
-        {"ticker":"BTC","buy":63659,"price":63659,"size":14000,"qty":0.2199,"pnl_pct":0,"pnl_abs":0,"stop":"мес.<$56k","target":"84k / 126k","status":"ok","note":""},
-        {"ticker":"ETH","buy":1726,"price":1726,"size":12000,"qty":6.953,"pnl_pct":0,"pnl_abs":0,"stop":"<$1400","target":"2400 / 3800","status":"ok","note":""},
-        {"ticker":"SOL","buy":71.46,"price":71.46,"size":10000,"qty":139.9,"pnl_pct":0,"pnl_abs":0,"stop":"нед.<$52","target":"110 / 180","status":"ok","note":""},
-        {"ticker":"AAVE","buy":74.73,"price":74.73,"size":10000,"qty":133.8,"pnl_pct":0,"pnl_abs":0,"stop":"нед.<$48","target":"95 / 140","status":"warn","note":"extended"},
-        {"ticker":"UNI","buy":3.013,"price":3.013,"size":8000,"qty":2655,"pnl_pct":0,"pnl_abs":0,"stop":"<$1.80","target":"4.20 / 6.50","status":"ok","note":""},
-        {"ticker":"PENDLE","buy":1.392,"price":1.392,"size":7000,"qty":5029,"pnl_pct":0,"pnl_abs":0,"stop":"<$0.95","target":"2.20 / 3.50","status":"ok","note":""},
-        {"ticker":"XRP","buy":1.150,"price":1.150,"size":7000,"qty":6087,"pnl_pct":0,"pnl_abs":0,"stop":"<$0.95","target":"1.60 / 2.40","status":"ok","note":""},
-        {"ticker":"AVAX","buy":6.188,"price":6.188,"size":7000,"qty":1131,"pnl_pct":0,"pnl_abs":0,"stop":"<$5.20","target":"10 / 15","status":"warn","note":"риск"},
-        {"ticker":"ENA","buy":0.0892,"price":0.0892,"size":6000,"qty":67265,"pnl_pct":0,"pnl_abs":0,"stop":"<$0.06","target":"0.18 / 0.35","status":"ok","note":""},
-        {"ticker":"SKY","buy":0.05825,"price":0.05825,"size":6000,"qty":103004,"pnl_pct":0,"pnl_abs":0,"stop":"<$0.055","target":"0.10 / 0.14","status":"warn","note":"у инвалидации"}
+        {"ticker":"BTC","buy":63659,"price":63861,"size":14000,"qty":0.2199,"pnl_pct":0.32,"pnl_abs":44,"stop":"мес.<$56k","target":"84k / 126k","status":"ok","note":""},
+        {"ticker":"ETH","buy":1726,"price":1719.80,"size":12000,"qty":6.953,"pnl_pct":-0.36,"pnl_abs":-43,"stop":"<$1400","target":"2400 / 3800","status":"ok","note":""},
+        {"ticker":"SOL","buy":71.46,"price":73.16,"size":10000,"qty":139.9,"pnl_pct":2.38,"pnl_abs":238,"stop":"нед.<$52","target":"110 / 180","status":"ok","note":"лидер дня"},
+        {"ticker":"AAVE","buy":74.73,"price":74.59,"size":10000,"qty":133.8,"pnl_pct":-0.19,"pnl_abs":-19,"stop":"нед.<$48","target":"95 / 140","status":"warn","note":"extended"},
+        {"ticker":"UNI","buy":3.013,"price":3.028,"size":8000,"qty":2655,"pnl_pct":0.50,"pnl_abs":40,"stop":"<$1.80","target":"4.20 / 6.50","status":"ok","note":""},
+        {"ticker":"PENDLE","buy":1.392,"price":1.433,"size":7000,"qty":5029,"pnl_pct":2.95,"pnl_abs":206,"stop":"<$0.95","target":"2.20 / 3.50","status":"ok","note":"лидер дня"},
+        {"ticker":"XRP","buy":1.150,"price":1.1341,"size":7000,"qty":6087,"pnl_pct":-1.38,"pnl_abs":-97,"stop":"<$0.95","target":"1.60 / 2.40","status":"ok","note":"слабейший"},
+        {"ticker":"AVAX","buy":6.188,"price":6.182,"size":7000,"qty":1131,"pnl_pct":-0.10,"pnl_abs":-7,"stop":"<$5.20","target":"10 / 15","status":"warn","note":"риск"},
+        {"ticker":"ENA","buy":0.0892,"price":0.0887,"size":6000,"qty":67265,"pnl_pct":-0.56,"pnl_abs":-34,"stop":"<$0.06","target":"0.18 / 0.35","status":"ok","note":""},
+        {"ticker":"SKY","buy":0.05825,"price":0.05934,"size":6000,"qty":103004,"pnl_pct":1.87,"pnl_abs":112,"stop":"<$0.055","target":"0.10 / 0.14","status":"warn","note":"отскок от инвалидации"}
       ]
     },
     {
@@ -58,8 +58,8 @@
       "capital": 100000, "value": 100000, "cash": 100000, "invested": 0, "pnl_pct": 0, "pnl_abs": 0,
       "positions": [],
       "watching": [
-        {"ticker":"DOGE","side":"лонг","trigger":"пробой $0.090","note":"сейчас ~$0.084"},
-        {"ticker":"AVAX","side":"лонг","trigger":"реклейм $7.00","note":"сейчас ~$6.19"}
+        {"ticker":"DOGE","side":"лонг","trigger":"пробой $0.090","note":"сейчас ~$0.083"},
+        {"ticker":"AVAX","side":"лонг","trigger":"реклейм $7.00","note":"сейчас ~$6.18"}
       ]
     }
   ],
