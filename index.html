@@ -200,7 +200,8 @@
     DOGE:"DOGEUSDT", BNB:"BNBUSDT", NEAR:"NEARUSDT", TAO:"TAOUSDT", HYPE:"HYPEUSDT"
   };
   var STATE = { data:null };
-  var LIVE = { ok:false, at:0 };
+  var LIVE = { crypto:false, stocks:false, at:0 };
+  var FINNHUB_KEY = "d8smu61r01qh5resk6egd8smu61r01qh5resk6f0";
   var openSet = { 0:true };
 
   function liveTime(){
@@ -208,6 +209,13 @@
       var d = new Date(LIVE.at || Date.now());
       return ("0"+d.getHours()).slice(-2) + ":" + ("0"+d.getMinutes()).slice(-2);
     } catch(e){ return ""; }
+  }
+  function liveOn(){ return LIVE.crypto || LIVE.stocks; }
+  function liveLabel(){
+    if (LIVE.crypto && LIVE.stocks) return "Крипта и акции — в реальном времени";
+    if (LIVE.crypto) return "Крипта — в реальном времени";
+    if (LIVE.stocks) return "Акции — в реальном времени";
+    return "";
   }
 
   /* ---------- formatting helpers ---------- */
@@ -467,7 +475,7 @@
         '<span class="pnl-big ' + heroCls + ' mono">' + (arrow(pnlPct) ? arrow(pnlPct)+' ' : '') + fmtPct(pnlPct) + '</span>' +
       '</div>' +
       (meta.updated ? '<div class="updated">Обновлено: ' + esc(meta.updated) + '</div>' : '') +
-      (LIVE.ok ? '<div class="live-note"><span class="live-dot"></span>Крипта — в реальном времени · ' + liveTime() + '</div>' : '') +
+      (liveOn() ? '<div class="live-note"><span class="live-dot"></span>' + liveLabel() + ' · ' + liveTime() + '</div>' : '') +
     '</div>';
 
     /* chips */
@@ -512,7 +520,7 @@
     html += '<div class="footer">' +
       (meta.disclaimer ? '<div class="disc">' + esc(meta.disclaimer) + '</div>' : '') +
       channelHtml +
-      '<div class="upd-note">' + (LIVE.ok ? 'Крипта — онлайн (Binance) · акции — дневной снимок' : 'Данные обновляются ежедневно') + '</div>' +
+      '<div class="upd-note">' + (liveOn() ? ('Онлайн: ' + (LIVE.crypto ? 'крипта (Binance)' : '') + (LIVE.crypto && LIVE.stocks ? ' · ' : '') + (LIVE.stocks ? 'акции (Finnhub)' : '')) : 'Данные обновляются ежедневно') + '</div>' +
       '<div class="reload-bar"><button class="btn btn-ghost" id="reload">↻ Обновить</button></div>' +
     '</div>';
 
@@ -590,8 +598,45 @@
         }
         if (touched) recomputeBook(books[b]);
       }
-      recomputeSummary(data);
-      LIVE.ok = true; LIVE.at = Date.now();
+      LIVE.crypto = true;
+      return true;
+    }).catch(function(){ return false; });
+  }
+
+  function enrichLiveStocks(data){
+    var books = Array.isArray(data.books) ? data.books : [];
+    var need = [];
+    for (var i=0;i<books.length;i++){
+      var pos = books[i].positions || [];
+      for (var j=0;j<pos.length;j++){
+        var t = pos[j].ticker;
+        if (t && !CRYPTO_SYM[t] && isNum(pos[j].buy) && isNum(pos[j].size) && need.indexOf(t) < 0) need.push(t);
+      }
+    }
+    if (!need.length || !FINNHUB_KEY) return Promise.resolve(false);
+    return Promise.all(need.map(function(t){
+      return fetch("https://finnhub.io/api/v1/quote?symbol=" + encodeURIComponent(t) + "&token=" + FINNHUB_KEY, { cache:"no-store" })
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ return (j && isFinite(j.c) && j.c > 0) ? { t:t, price:j.c } : null; })
+        .catch(function(){ return null; });
+    })).then(function(results){
+      var prices = {};
+      for (var k=0;k<results.length;k++){ if (results[k]) prices[results[k].t] = results[k].price; }
+      if (!Object.keys(prices).length) return false;
+      for (var b=0;b<books.length;b++){
+        var pp = books[b].positions || [], touched = false;
+        for (var p=0;p<pp.length;p++){
+          var pos = pp[p];
+          if (prices[pos.ticker] != null && isNum(pos.buy) && isNum(pos.size)){
+            pos.price = prices[pos.ticker];
+            pos.pnl_pct = (pos.price - pos.buy) / pos.buy * 100;
+            pos.pnl_abs = pos.size * (pos.pnl_pct / 100);
+            pos._live = true; touched = true;
+          }
+        }
+        if (touched) recomputeBook(books[b]);
+      }
+      LIVE.stocks = true;
       return true;
     }).catch(function(){ return false; });
   }
@@ -599,7 +644,13 @@
   /* ---------- load ---------- */
   function refreshLive(){
     if (!STATE.data) return;
-    enrichLiveCrypto(STATE.data).then(function(changed){ if (changed) render(STATE.data); });
+    Promise.all([enrichLiveCrypto(STATE.data), enrichLiveStocks(STATE.data)]).then(function(res){
+      if (res[0] || res[1]){
+        recomputeSummary(STATE.data);
+        LIVE.at = Date.now();
+        render(STATE.data);
+      }
+    });
   }
   function load(){
     renderLoading();
