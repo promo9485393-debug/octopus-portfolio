@@ -10,11 +10,11 @@
     "disclaimer": "Виртуальный портфель — реальные деньги не двигаем. Это разбор, не сигнал. Не инвестиционная рекомендация."
   },
   "summary": {
-    "value": 388689.7,
+    "value": 390130.1,
     "invested": 176000,
     "cash": 224000,
-    "pnl_abs": -11310.3,
-    "pnl_pct": -2.83,
+    "pnl_abs": -9869.9,
+    "pnl_pct": -2.47,
     "wins": 0,
     "losses": 0
   },
@@ -25,59 +25,59 @@
       "name": "Акции/ETF — долгосрок",
       "horizon": "6–24 мес",
       "capital": 100000,
-      "value": 94503.3,
+      "value": 96025.8,
       "cash": 11000,
       "invested": 89000,
-      "pnl_pct": -5.5,
-      "pnl_abs": -5496.7,
+      "pnl_pct": -3.97,
+      "pnl_abs": -3974.2,
       "positions": [
         {
           "ticker": "NVDA",
           "buy": 210.69,
-          "price": 197.28,
+          "price": 198.70,
           "size": 12000,
           "qty": 56.95,
-          "pnl_pct": -6.36,
-          "pnl_abs": -763.2,
+          "pnl_pct": -5.69,
+          "pnl_abs": -682.9,
           "stop": "<$170",
           "target": "276 / 330",
           "status": "ok",
-          "note": "чип-распродажа"
+          "note": "чип-ротация, ждёт Micron"
         },
         {
           "ticker": "ORCL",
           "buy": 184.29,
-          "price": 156.17,
+          "price": 165.67,
           "size": 11000,
           "qty": 59.69,
-          "pnl_pct": -15.26,
-          "pnl_abs": -1678.6,
+          "pnl_pct": -10.10,
+          "pnl_abs": -1111.3,
           "stop": "<$150",
           "target": "260 / 320",
           "status": "ok",
-          "note": "AI-ротация вниз"
+          "note": "слабейший компаундер, до инвал. $150 ~9%"
         },
         {
           "ticker": "CCJ",
           "buy": 107.88,
-          "price": 105.42,
+          "price": 108.89,
           "size": 10000,
           "qty": 92.7,
-          "pnl_pct": -2.28,
-          "pnl_abs": -228.0,
+          "pnl_pct": 0.94,
+          "pnl_abs": 93.6,
           "stop": "<$80",
           "target": "125 / 150",
           "status": "ok",
-          "note": "уран держится"
+          "note": "уран зелёный"
         },
         {
           "ticker": "NU",
           "buy": 12.71,
-          "price": 12.62,
+          "price": 12.59,
           "size": 9000,
           "qty": 708.1,
-          "pnl_pct": -0.71,
-          "pnl_abs": -63.9,
+          "pnl_pct": -0.94,
+          "pnl_abs": -85.0,
           "stop": "<$10",
           "target": "16 / 19",
           "status": "ok",
@@ -89,34 +89,34 @@
           "price": 189.86,
           "size": 9000,
           "qty": 45.34,
-          "pnl_pct": -4.35,
-          "pnl_abs": -391.5,
+          "pnl_pct": -2.23,
+          "pnl_abs": -200.9,
           "stop": "<$165",
           "target": "220 / 250",
           "status": "ok",
-          "note": ""
+          "note": "цена ~23.06, свежей нет"
         },
         {
           "ticker": "VRT",
           "buy": 333.05,
-          "price": 312.76,
+          "price": 324.75,
           "size": 9000,
           "qty": 27.02,
-          "pnl_pct": -6.09,
-          "pnl_abs": -548.1,
+          "pnl_pct": -2.49,
+          "pnl_abs": -224.3,
           "stop": "<$260",
           "target": "430 / 520",
           "status": "ok",
-          "note": "лидер акций дня"
+          "note": "охлаждение ЦОД, откат с хаёв"
         },
         {
           "ticker": "GD",
           "buy": 350.01,
-          "price": 346.47,
+          "price": 347.52,
           "size": 9000,
           "qty": 25.71,
-          "pnl_pct": -1.01,
-          "pnl_abs": -90.9,
+          "pnl_pct": -0.71,
+          "pnl_abs": -64.0,
           "stop": "<$300",
           "target": "390 / 430",
           "status": "ok",
@@ -125,24 +125,24 @@
         {
           "ticker": "GDX",
           "buy": 87.24,
-          "price": 74.02,
+          "price": 74.62,
           "size": 8000,
           "qty": 91.7,
-          "pnl_pct": -15.15,
-          "pnl_abs": -1212.0,
+          "pnl_pct": -14.47,
+          "pnl_abs": -1157.3,
           "stop": "<$70",
           "target": "96 / 110",
           "status": "warn",
-          "note": "золото вниз"
+          "note": "золото к 7-мес. лоям, тезис под давлением"
         },
         {
           "ticker": "NBIS",
           "buy": 298.8,
-          "price": 251.75,
+          "price": 259.47,
           "size": 7000,
           "qty": 23.43,
-          "pnl_pct": -15.75,
-          "pnl_abs": -1102.5,
+          "pnl_pct": -13.16,
+          "pnl_abs": -921.4,
           "stop": "<$150",
           "target": "320 / 450",
           "status": "warn",
@@ -151,15 +151,15 @@
         {
           "ticker": "SRRK",
           "buy": 47.33,
-          "price": 52.84,
+          "price": 50.92,
           "size": 5000,
           "qty": 105.6,
-          "pnl_pct": 11.64,
-          "pnl_abs": 582.0,
+          "pnl_pct": 7.59,
+          "pnl_abs": 379.3,
           "stop": "<$34",
           "target": "60 / 80",
           "status": "ok",
-          "note": "лотерея — в плюсе"
+          "note": "лотерея — в плюсе, биотех вне ротации"
         }
       ]
     },
@@ -169,33 +169,33 @@
       "name": "Крипта — долгосрок",
       "horizon": "цикл",
       "capital": 100000,
-      "value": 94186.4,
+      "value": 94104.3,
       "cash": 13000,
       "invested": 87000,
-      "pnl_pct": -5.81,
-      "pnl_abs": -5813.6,
+      "pnl_pct": -5.90,
+      "pnl_abs": -5895.7,
       "positions": [
         {
           "ticker": "BTC",
           "buy": 63659,
-          "price": 59626.8,
+          "price": 59572.4,
           "size": 14000,
           "qty": 0.2199,
-          "pnl_pct": -6.33,
-          "pnl_abs": -886.2,
+          "pnl_pct": -6.42,
+          "pnl_abs": -898.7,
           "stop": "мес.<$56k",
           "target": "84k / 126k",
           "status": "ok",
-          "note": ""
+          "note": "риск-офф перед PCE"
         },
         {
           "ticker": "ETH",
           "buy": 1726,
-          "price": 1573.13,
+          "price": 1570.80,
           "size": 12000,
           "qty": 6.953,
-          "pnl_pct": -8.86,
-          "pnl_abs": -1063.2,
+          "pnl_pct": -8.99,
+          "pnl_abs": -1079.0,
           "stop": "<$1400",
           "target": "2400 / 3800",
           "status": "ok",
@@ -204,37 +204,37 @@
         {
           "ticker": "SOL",
           "buy": 71.46,
-          "price": 66.08,
+          "price": 65.94,
           "size": 10000,
           "qty": 139.9,
-          "pnl_pct": -7.53,
-          "pnl_abs": -753.0,
+          "pnl_pct": -7.72,
+          "pnl_abs": -772.5,
           "stop": "нед.<$52",
           "target": "110 / 180",
           "status": "ok",
-          "note": "отдал $70"
+          "note": "потерял $68"
         },
         {
           "ticker": "AAVE",
           "buy": 74.73,
-          "price": 75.66,
+          "price": 75.65,
           "size": 10000,
           "qty": 133.8,
-          "pnl_pct": 1.24,
-          "pnl_abs": 124.0,
+          "pnl_pct": 1.23,
+          "pnl_abs": 123.1,
           "stop": "нед.<$48",
           "target": "95 / 140",
-          "status": "warn",
-          "note": "extended"
+          "status": "ok",
+          "note": "единств. зелёный в крипте"
         },
         {
           "ticker": "UNI",
           "buy": 3.013,
-          "price": 2.796,
+          "price": 2.795,
           "size": 8000,
           "qty": 2655,
-          "pnl_pct": -7.2,
-          "pnl_abs": -576.0,
+          "pnl_pct": -7.23,
+          "pnl_abs": -578.8,
           "stop": "<$1.80",
           "target": "4.20 / 6.50",
           "status": "ok",
@@ -243,11 +243,11 @@
         {
           "ticker": "PENDLE",
           "buy": 1.392,
-          "price": 1.215,
+          "price": 1.214,
           "size": 7000,
           "qty": 5029,
-          "pnl_pct": -12.72,
-          "pnl_abs": -890.4,
+          "pnl_pct": -12.79,
+          "pnl_abs": -895.1,
           "stop": "<$0.95",
           "target": "2.20 / 3.50",
           "status": "ok",
@@ -256,11 +256,11 @@
         {
           "ticker": "XRP",
           "buy": 1.15,
-          "price": 1.0611,
+          "price": 1.0587,
           "size": 7000,
           "qty": 6087,
-          "pnl_pct": -7.73,
-          "pnl_abs": -541.1,
+          "pnl_pct": -7.94,
+          "pnl_abs": -555.7,
           "stop": "<$0.95",
           "target": "1.60 / 2.40",
           "status": "ok",
@@ -269,24 +269,24 @@
         {
           "ticker": "AVAX",
           "buy": 6.188,
-          "price": 6.102,
+          "price": 6.098,
           "size": 7000,
           "qty": 1131,
-          "pnl_pct": -1.39,
-          "pnl_abs": -97.3,
+          "pnl_pct": -1.45,
+          "pnl_abs": -101.8,
           "stop": "<$5.20",
           "target": "10 / 15",
           "status": "warn",
-          "note": "единств. зелёный в крипте"
+          "note": "почти у нуля, отскочил от лоя $5.68"
         },
         {
           "ticker": "ENA",
           "buy": 0.0892,
-          "price": 0.081,
+          "price": 0.0809,
           "size": 6000,
           "qty": 67265,
-          "pnl_pct": -9.19,
-          "pnl_abs": -551.4,
+          "pnl_pct": -9.30,
+          "pnl_abs": -558.3,
           "stop": "<$0.06",
           "target": "0.18 / 0.35",
           "status": "ok",
@@ -299,11 +299,11 @@
           "size": 6000,
           "qty": 103004,
           "pnl_pct": -9.65,
-          "pnl_abs": -579.0,
+          "pnl_abs": -578.9,
           "stop": "<$0.055",
           "target": "0.10 / 0.14",
           "status": "warn",
-          "note": "у грани инвалидации $0.055 (внутри дня прокалывал, выкупили)"
+          "note": "ПРОБИЛ инвал. $0.055 внутри дня ($0.0526) — закрытие дня под уровнем закроет позицию"
         }
       ]
     },
@@ -321,22 +321,16 @@
       "positions": [],
       "watching": [
         {
-          "ticker": "VLO",
-          "side": "лонг",
-          "trigger": "пробой $264",
-          "note": "сейчас ~$238"
-        },
-        {
           "ticker": "UNH",
           "side": "лонг",
           "trigger": "реклейм $416",
-          "note": "сейчас ~$401"
+          "note": "сейчас ~$406"
         },
         {
           "ticker": "HUM",
           "side": "лонг",
-          "trigger": "пробой $370",
-          "note": "сейчас ~$360 (под триггером)"
+          "trigger": "пробой $370 (не удержан)",
+          "note": "сейчас ~$363"
         }
       ]
     },
@@ -354,16 +348,10 @@
       "positions": [],
       "watching": [
         {
-          "ticker": "DOGE",
-          "side": "лонг",
-          "trigger": "пробой $0.090",
-          "note": "сейчас ~$0.083"
-        },
-        {
-          "ticker": "AVAX",
-          "side": "лонг",
-          "trigger": "реклейм $7.00",
-          "note": "сейчас ~$6.30"
+          "ticker": "—",
+          "side": "—",
+          "trigger": "ждём свежий триггер",
+          "note": "VLO/DOGE/AVAX-сетапы истекли 24.06 (≈2 нед без входа)"
         }
       ]
     }
