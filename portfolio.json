@@ -29,7 +29,7 @@
       "cash": 29365.4,
       "invested": 62000,
       "pnl_pct": -4.06,
-      "pnl_abs": 4578.6,
+      "pnl_abs": -4056.0,
       "positions": [
         {
           "ticker": "NVDA",
@@ -138,7 +138,7 @@
       "cash": 25689.1,
       "invested": 74000,
       "pnl_pct": 6.45,
-      "pnl_abs": 6764.7,
+      "pnl_abs": 6453.8,
       "positions": [
         {
           "ticker": "BTC",
@@ -259,7 +259,7 @@
       "cash": 100000,
       "invested": 0,
       "pnl_pct": 0.0,
-      "pnl_abs": 0.0,
+      "pnl_abs": 0,
       "positions": [],
       "watching": [
         {
@@ -286,7 +286,7 @@
       "cash": 100000,
       "invested": 0,
       "pnl_pct": 0.0,
-      "pnl_abs": 0.0,
+      "pnl_abs": 0,
       "positions": [],
       "watching": [
         {
