@@ -1,0 +1,76 @@
+# Hidden daily portfolio routine: swing scan -> refresh -> deploy -> post. Runs inside ONE
+# hidden console (launched by run_hidden.vbs), so child tools (python/git) spawn NO windows.
+param([switch]$Dry)
+$ErrorActionPreference = "Continue"
+$dir = "D:\Vibecoding\Octopus\webapp"
+$root = "D:\Vibecoding\Octopus"
+
+# 0) swing books: mechanical "20-day breakout + 6 ATR trailing stop" scan. Writes entries/exits
+#    into portfolio.json BEFORE the price refresh, so new positions get fresh P&L in the same run.
+# 0b) Рефреш кэша лаборатории. Идёт ПЕРЕД генерацией данных сайта: устаревший ряд
+# даёт правдоподобный, но ложный бэктест, и по виду он неотличим от честного.
+# Свежие ряды пропускаются, качается только отставшее.
+python -m lab.refresh --quiet 2>&1 | Out-File -Append -Encoding UTF8 "$root\cache_log.txt"
+if($LASTEXITCODE -ne 0){
+  ("=== " + (Get-Date -Format "yyyy-MM-dd HH:mm") + " КЭШ НЕ ОБНОВЛЁН - слишком много провалов ===") |
+    Out-File -Append -Encoding UTF8 "$root\cache_log.txt"
+}
+
+# Данные для сайта лаборатории: конфигурация книг и колонка канала.
+# Читаются ИЗ сканера и из публичной витрины канала, руками ничего не переписывается.
+python -m lab.live --out "$root\site\live.json" 2>&1 | Out-Null
+python -m lab.column --out "$root\site\column.json" 2>&1 | Out-Null
+python -m lab.trades --out "$root\site\trades.json" 2>&1 | Out-Null
+
+$log = "$root\swing_log.txt"
+if($Dry){ python "$root\swing_scan.py" } else {
+  $out = python "$root\swing_scan.py" --apply 2>&1
+  ("=== " + (Get-Date -Format "yyyy-MM-dd HH:mm") + " ===") | Out-File -Append -Encoding UTF8 $log
+  $out | Out-File -Append -Encoding UTF8 $log
+}
+
+# 1) refresh prices (Binance crypto + Finnhub stocks) and recompute P&L
+python "$dir\refresh_snapshot.py" 2>&1 | Out-Null
+
+# 2) deploy dashboard to GitHub Pages (privacy guard on the personal-positions marker)
+$marker = [char]::ConvertFromUtf32(0x1F4BC)
+$content = Get-Content -Raw -Encoding UTF8 "$dir\portfolio.json"
+if(-not $content.Contains($marker)){
+  $changes = git -C $dir status --porcelain
+  if($changes){
+    git -C $dir add -A 2>&1 | Out-Null
+    git -C $dir commit -m ("portfolio " + (Get-Date -Format "yyyy-MM-dd HH:mm")) 2>&1 | Out-Null
+    git -C $dir push origin main 2>&1 | Out-Null
+  }
+}
+
+# 2b) publish the lab site to Vercel.
+# The privacy guard runs FIRST and its exit code decides. A guard whose result is
+# ignored protects nothing, so the deploy is inside the success branch, not after it.
+# Data files were refreshed above; regenerate trades.json once more so the site
+# reflects the P&L recomputed in step 1 rather than the state before it.
+$site = "$root\site"
+python -m lab.trades --out "$site\trades.json" 2>&1 | Out-Null
+python "$site\guard.py" 2>&1 | Out-File -Append -Encoding UTF8 "$root\deploy_log.txt"
+if($LASTEXITCODE -eq 0){
+  if(-not $Dry){
+    # Коммитим ПЕРЕД деплоем: рутина обновляет данные и публикует их через CLI,
+    # но без коммита git отстаёт от живого сайта. Расхождение незаметно, пока
+    # кто-нибудь не задеплоит из репозитория и не откатит витрину на вчера.
+    $ch = git -C $site status --porcelain
+    if($ch){
+      git -C $site add -A 2>&1 | Out-Null
+      git -C $site -c user.email=promo9485393@gmail.com -c user.name=Octopus commit -m ("данные " + (Get-Date -Format "yyyy-MM-dd HH:mm")) 2>&1 | Out-Null
+      git -C $site push origin HEAD 2>&1 | Out-Null
+    }
+    $vout = vercel deploy --prod --yes --cwd $site 2>&1
+    ("=== " + (Get-Date -Format "yyyy-MM-dd HH:mm") + " deploy ===") | Out-File -Append -Encoding UTF8 "$root\deploy_log.txt"
+    $vout | Out-File -Append -Encoding UTF8 "$root\deploy_log.txt"
+  }
+} else {
+  ("=== " + (Get-Date -Format "yyyy-MM-dd HH:mm") + " ГАРД НЕ ПРОШЁЛ - публикация отменена ===") |
+    Out-File -Append -Encoding UTF8 "$root\deploy_log.txt"
+}
+
+# 3) post the templated daily summary to the channel
+if($Dry){ python "$dir\daily_post.py" --dry } else { python "$dir\daily_post.py" 2>&1 | Out-Null }
