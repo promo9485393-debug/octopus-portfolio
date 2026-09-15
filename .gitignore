@@ -3,3 +3,5 @@ refresh_snapshot.py
 daily_post.py
 routine.ps1
 run_hidden.vbs
+__pycache__/
+*.pyc
